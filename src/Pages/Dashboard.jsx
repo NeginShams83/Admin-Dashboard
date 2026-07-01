@@ -1,8 +1,19 @@
 import { NavLink, Outlet } from "react-router-dom";
+import { useTheme } from "../context/ThemeContext";
 
 function Dashboard() {
+  const { theme } = useTheme();
+
+  //change color for theme
+  const layoutStyle = {
+    backgroundColor: theme === "dark" ? "#1a1a1a" : "#ffffff",
+    color: theme === "dark" ? "#ffffff" : "#333333",
+    minHeight: "100vh",
+    transition: "all 0.3s ease",
+  };
+
   return (
-    <div>
+    <div style={layoutStyle}>
       <div className="flex min-h-screen">
         {/* sidebar */}
         <aside className="w-60 border-r-2 border-sky-950 p-5">
