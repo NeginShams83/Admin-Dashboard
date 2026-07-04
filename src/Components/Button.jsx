@@ -1,7 +1,7 @@
-function Button(text, onClick, className) {
+function Button({ children, onClick, className, disabled }) {
   return (
-    <button className={className} onClick={onClick}>
-      {text}
+    <button className={className} disabled={disabled} onClick={onClick}>
+      {children}
     </button>
   );
 }
