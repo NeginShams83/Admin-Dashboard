@@ -1,6 +1,8 @@
 import Input from "../Components/Input";
 import Button from "../Components/Button";
 import { useState } from "react";
+import { useAuth } from "../Context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
   //state
@@ -9,6 +11,9 @@ function Login() {
   const [usernameError, setUsernameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
+  const { setUser } = useAuth();
+
+  const navigate = useNavigate();
   //handle sub
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -27,6 +32,8 @@ function Login() {
     if (hasError) {
       return;
     }
+    setUser({ username, role: "admin" });
+    navigate("/dashboard");
   };
   return (
     <>

@@ -1,16 +1,25 @@
 import { NavLink, Outlet } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
-
+import { useAuth } from "../Context/AuthContext";
+import { Navigate } from "react-router-dom";
 function Dashboard() {
   const { theme } = useTheme();
+  const { user } = useAuth();
+  console.log(user);
 
   //change color for theme
   const layoutStyle = {
-    backgroundColor: theme === "dark" ? "#1a1a1a" : "#ffffff",
-    color: theme === "dark" ? "#ffffff" : "#333333",
+    backgroundColor: theme === "dark" ? "#111B2D" : "#ffffff",
+    color: theme === "dark" ? "#ffffff" : "#000000",
     minHeight: "100vh",
     transition: "all 0.3s ease",
   };
+  //welcome message
+  const welcomeMessage = user ? (
+    <p>Welcome {user.username}</p>
+  ) : (
+    <Navigate to="/login" />
+  );
 
   return (
     <div style={layoutStyle}>
@@ -55,6 +64,7 @@ function Dashboard() {
 
         {/* content */}
         <main className="flex-1 p-8">
+          {welcomeMessage}
           <Outlet />
         </main>
       </div>
