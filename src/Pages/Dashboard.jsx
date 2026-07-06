@@ -1,7 +1,6 @@
 import { NavLink, Outlet } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
 import { useAuth } from "../Context/AuthContext";
-import { Navigate } from "react-router-dom";
 function Dashboard() {
   const { theme } = useTheme();
   const { user } = useAuth();
@@ -15,11 +14,7 @@ function Dashboard() {
     transition: "all 0.3s ease",
   };
   //welcome message
-  const welcomeMessage = user ? (
-    <p>Welcome {user.username}</p>
-  ) : (
-    <Navigate to="/login" />
-  );
+  const welcomeMessage = <p>Welcome {user.username}</p>;
 
   return (
     <div style={layoutStyle}>
