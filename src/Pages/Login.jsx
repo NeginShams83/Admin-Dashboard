@@ -32,7 +32,13 @@ function Login() {
     if (hasError) {
       return;
     }
-    setUser({ username, role: "admin" });
+    const userData = {
+      username,
+      role: "admin",
+    };
+    setUser(userData);
+    localStorage.setItem("username", JSON.stringify(userData));
+
     navigate("/dashboard");
   };
   return (
