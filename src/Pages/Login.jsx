@@ -3,6 +3,7 @@ import Button from "../Components/Button";
 import { useState } from "react";
 import { useAuth } from "../Context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import api from "../api/api";
 
 function Login() {
   //state
@@ -15,7 +16,7 @@ function Login() {
 
   const navigate = useNavigate();
   //handle sub
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setUsernameError("");
     setPasswordError("");
@@ -32,14 +33,29 @@ function Login() {
     if (hasError) {
       return;
     }
-    const userData = {
-      username,
-      role: "admin",
-    };
-    setUser(userData);
-    localStorage.setItem("username", JSON.stringify(userData));
 
-    navigate("/dashboard");
+    try {
+      const response = await api.post("/auth/login", {
+        username,
+        password,
+      });
+
+      const user = response.data.data.user;
+      const accessToken = response.data.token.accessToken;
+
+      setUser(user);
+
+      localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("accessToken", accessToken);
+
+      if (user.role === "ADMIN") {
+        navigate("/dashboard");
+      } else {
+        navigate("/");
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
     <>
