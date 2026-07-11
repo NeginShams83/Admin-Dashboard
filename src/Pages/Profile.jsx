@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import api from "../api/api.js";
 import Loading from "../Components/Common/Loading.jsx";
+import UserCard from "../Components/UserCard.jsx";
 
 function Profile() {
   //states
@@ -58,27 +59,7 @@ function Profile() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           {users.map((user) => (
-            <div
-              key={user._id}
-              className="bg-white/30 p-5 rounded-xl border shadow-sm hover:shadow-md transition-shadow duration-200 flex items-center space-x-4 space-x-reverse"
-            >
-              <div className="bg-gradient-to-tr from-blue-500 to-indigo-600 text-white w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg shadow-sm">
-                {user.firstname ? user.firstname[0].toUpperCase() : "U"}
-              </div>
-
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-gray-900 truncate">
-                  {user.firstname}
-                </p>
-                <p className="text-xs text-gray-900 truncate mt-1">
-                  @{user.username}
-                </p>
-              </div>
-              <span className="text-xs mr-2 bg-indigo-100 text-indigo-700 px-2 py-1 rounded-full">
-                {user.role}
-              </span>
-              <div className="w-2 h-2 rounded-full bg-green-500"></div>
-            </div>
+            <UserCard key={user?._id} user={user} />
           ))}
         </div>
       )}
