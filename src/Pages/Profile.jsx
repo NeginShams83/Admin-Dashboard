@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import api from "../api/api.js";
+import Loading from "../Components/Common/Loading.jsx";
 
 function Profile() {
   //states
@@ -26,14 +27,7 @@ function Profile() {
 
   //load
   if (loading) {
-    return (
-      <div className="flex justify-center items-center h-48">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-        <span className="mr-2 text-gray-600 font-medium">
-          در حال دریافت لیست کاربران...
-        </span>
-      </div>
-    );
+    return <Loading />;
   }
   //error
   if (error) {
