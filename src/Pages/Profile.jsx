@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import api from "../api/api.js";
 import Loading from "../Components/Common/Loading.jsx";
 import UserCard from "../Components/UserCard.jsx";
+import Alert from "../Components/Common/Alert.jsx";
+import Empty from "../Components/Common/Empty.jsx";
 
 function Profile() {
   //states
@@ -32,11 +34,7 @@ function Profile() {
   }
   //error
   if (error) {
-    return (
-      <div className="bg-red-50 text-red-600 p-4 rounded-lg max-w-md mx-auto my-4 text-center border border-red-200">
-        <p className="font-semibold">❌ خطا: {error}</p>
-      </div>
-    );
+    return <Alert type="error" message={error} />;
   }
 
   return (
@@ -53,9 +51,8 @@ function Profile() {
       <h3 className="text-lg font-medium  mb-4">لیست کاربران سیستم:</h3>
 
       {users.length === 0 ? (
-        <p className="text-gray-500 text-center py-8">
-          هیچ کاربری در سیستم یافت نشد.
-        </p>
+        //empty state
+        <Empty title="هیچ کاربری در سیستم یافت نشد" />
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           {users.map((user) => (
