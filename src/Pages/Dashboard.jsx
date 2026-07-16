@@ -3,21 +3,20 @@ import { useTheme } from "../context/ThemeContext";
 import { useAuth } from "../Context/AuthContext";
 import { useNavigate } from "react-router-dom";
 function Dashboard() {
-  const { theme } = useTheme();
+  // const { theme } = useTheme();
   const { user } = useAuth();
   const { logout } = useAuth();
   const navigate = useNavigate();
   console.log(user);
 
-  //change color for theme
-  const layoutStyle = {
-    backgroundColor: theme === "dark" ? "#111B2D" : "#ffffff",
-    color: theme === "dark" ? "#ffffff" : "#000000",
-    border: theme === "dark" ? "1px solid #000000" : "#ffffff",
-
-    minHeight: "100vh",
-    transition: "all 0.3s ease",
-  };
+  // //change color for theme
+  // const layoutStyle = {
+  //   backgroundColor: theme === "dark" ? "#111B2D" : "#ffffff",
+  //   color: theme === "dark" ? "#ffffff" : "#000000"
+  //   border: theme === "dark" ? "1px solid #000000" : "1px solid #ffffff",
+  //   minHeight: "100vh",
+  //   transition: "all 0.3s ease",
+  // };
   //welcome message
   const welcomeMessage = (
     <p className="m-4 text-center font-extralight">Welcome {user.username}</p>
@@ -29,7 +28,7 @@ function Dashboard() {
     navigate("/login");
   };
   return (
-    <div style={layoutStyle}>
+    <div className="bg-white text-gray-800 dark:bg-gray-800 dark:text-white">
       <div className="flex min-h-screen">
         <aside className="w-60 border-r-2 border-sky-950 p-5">
           {/* sidebar */}
