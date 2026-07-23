@@ -1,7 +1,7 @@
 import { NavLink, Outlet } from "react-router-dom";
-import { useTheme } from "../context/ThemeContext";
 import { useAuth } from "../Context/AuthContext";
 import { useNavigate } from "react-router-dom";
+
 function Dashboard() {
   // const { theme } = useTheme();
   const { user } = useAuth();
@@ -9,14 +9,6 @@ function Dashboard() {
   const navigate = useNavigate();
   console.log(user);
 
-  // //change color for theme
-  // const layoutStyle = {
-  //   backgroundColor: theme === "dark" ? "#111B2D" : "#ffffff",
-  //   color: theme === "dark" ? "#ffffff" : "#000000"
-  //   border: theme === "dark" ? "1px solid #000000" : "1px solid #ffffff",
-  //   minHeight: "100vh",
-  //   transition: "all 0.3s ease",
-  // };
   //welcome message
   const welcomeMessage = (
     <p className="m-4 text-center font-extralight">Welcome {user.username}</p>
@@ -36,6 +28,16 @@ function Dashboard() {
           <h1 className="text-2xl font-bold mb-5">Dashboard</h1>
 
           <nav className="flex flex-col gap-4">
+            <NavLink
+              className={({ isActive }) =>
+                isActive
+                  ? "bg-blue-700 text-white p-2 rounded-lg"
+                  : " hover:bg-blue-400  p-2 rounded-lg"
+              }
+              to={"Home"}
+            >
+              Home
+            </NavLink>
             <NavLink
               className={({ isActive }) =>
                 isActive
