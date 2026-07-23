@@ -5,6 +5,7 @@ import Favorites from "./Pages/Favorites";
 import Settings from "./Pages/Settings";
 import Profile from "./Pages/Profile";
 import Login from "./Pages/Login";
+import Home from "./Pages/Home";
 import { Navigate } from "react-router-dom";
 import ProtectedRoute from "./Router/ProtectedRoute.jsx";
 
@@ -17,14 +18,15 @@ function App() {
             <Route path="/" element={<Navigate to="/login" />} />
             <Route path="/login" element={<Login />} />
             <Route
-                path="/dashboard"
-                element={
-                  <ProtectedRoute>
-                    <Dashboard />
-                  </ProtectedRoute>
-                }
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
             >
-
+              <Route index element={<Home />} />
+              <Route path="home" element={<Home />} />
               <Route path="profile" element={<Profile />} />
               <Route path="settings" element={<Settings />} />
               <Route path="favorites" element={<Favorites />} />
