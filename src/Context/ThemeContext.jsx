@@ -1,27 +1,31 @@
 import { createContext, useEffect, useState, useContext } from "react";
 
-// 1. createContext
+// 1. Create Context
 const ThemeContext = createContext();
-// 2. Provider
-export function ThemeProvider({ children }) {
-  //state for theme by default is dark from local storage
 
+// 2. Define Provider
+export function ThemeProvider({ children }) {
+  // Retrieve initial theme from localStorage (default: "dark")
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem("theme") || "dark";
   });
+
   useEffect(() => {
     localStorage.setItem("theme", theme);
 
+    // Toggle 'dark' class on <html> element for Tailwind CSS dark mode compatibility
     if (theme === "dark") {
       document.documentElement.classList.add("dark");
     } else {
       document.documentElement.classList.remove("dark");
     }
   }, [theme]);
-  //function to toggle theme
+
+  // Function to toggle between themes
   const toggleTheme = () => {
     setTheme((prev) => (prev === "dark" ? "light" : "dark"));
   };
+
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
       {children}
@@ -29,8 +33,11 @@ export function ThemeProvider({ children }) {
   );
 }
 
-// 3. useContext
-// custom hook to use theme context
+// 3. Custom hook useTheme (with usage validation)
 export const useTheme = () => {
-  return useContext(ThemeContext);
+  const context = useContext(ThemeContext);
+  if (!context) {
+    throw new Error("useTheme must be used within a ThemeProvider.");
+  }
+  return context;
 };
