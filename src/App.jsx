@@ -1,40 +1,38 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { ThemeProvider } from "./context/ThemeContext";
-import Dashboard from "./Pages/Dashboard";
-import Favorites from "./Pages/Favorites";
-import Settings from "./Pages/Settings";
-import Profile from "./Pages/Profile";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+
+import Dashboard from "./Pages/Admin/Dashboard.jsx";
+import Favorites from "./Pages/Admin/Favorites.jsx";
+import Settings from "./Pages/Admin/Settings";
+import Profile from "./Pages/Admin/Profile";
 import Login from "./Pages/Login";
-import Home from "./Pages/Home";
-import { Navigate } from "react-router-dom";
+import Home from "./Pages/Admin/Home.jsx";
+import Users from "./Pages/Admin/Users.jsx";
 import ProtectedRoute from "./Router/ProtectedRoute.jsx";
 
 function App() {
   return (
-    <>
-      <BrowserRouter>
-        <ThemeProvider>
-          <Routes>
-            <Route path="/" element={<Navigate to="/login" />} />
-            <Route path="/login" element={<Login />} />
-            <Route
-              path="/dashboard"
-              element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              }
-            >
-              <Route index element={<Home />} />
-              <Route path="home" element={<Home />} />
-              <Route path="profile" element={<Profile />} />
-              <Route path="settings" element={<Settings />} />
-              <Route path="favorites" element={<Favorites />} />
-            </Route>
-          </Routes>
-        </ThemeProvider>
-      </BrowserRouter>
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/login" element={<Login />} />
+
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute adminOnly={true}>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<Home />} />
+          <Route path="home" element={<Home />} />
+          <Route path="users" element={<Users />} />
+          <Route path="profile" element={<Profile />} />
+          <Route path="settings" element={<Settings />} />
+          <Route path="favorites" element={<Favorites />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
 
