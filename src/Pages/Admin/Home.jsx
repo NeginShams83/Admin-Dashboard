@@ -17,19 +17,19 @@ function Home() {
       try {
         setLoading(true);
 
-        // دریافت هم‌زمان آمار کاربران و محصولات از API
+        // Fetch users and products stats concurrently
         const [usersRes, productsRes] = await Promise.allSettled([
           api.get("/users"),
           api.get("/products"),
         ]);
 
-        // محاسبه تعداد کاربران
+        // Calculate users count
         const usersData =
           usersRes.status === "fulfilled"
             ? usersRes.value.data?.users || usersRes.value.data || []
             : [];
 
-        // محاسبه تعداد محصولات
+        // Calculate products count
         const productsData =
           productsRes.status === "fulfilled"
             ? productsRes.value.data?.products || productsRes.value.data || []
@@ -38,11 +38,11 @@ function Home() {
         setStats({
           usersCount: Array.isArray(usersData) ? usersData.length : 0,
           productsCount: Array.isArray(productsData) ? productsData.length : 0,
-          ordersCount: 0, // در صورت افزودن بخش سفارشات متصل می‌شود
-          categoriesCount: 0, // در صورت افزودن بخش دسته‌بندی متصل می‌شود
+          ordersCount: 0, // Placeholder for future orders feature
+          categoriesCount: 0, // Placeholder for future categories feature
         });
       } catch (error) {
-        console.error("خطا در دریافت آمار داشبورد:", error);
+        console.error("Error fetching dashboard stats:", error);
       } finally {
         setLoading(false);
       }
@@ -55,7 +55,7 @@ function Home() {
 
   return (
     <div className="space-y-8">
-      {/* کارت‌های آمار */}
+      {/* Stat cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
         <StatCard title="Users" value={stats.usersCount} icon="👤" />
         <StatCard title="Products" value={stats.productsCount} icon="📦" />
@@ -63,7 +63,7 @@ function Home() {
         <StatCard title="Categories" value={stats.categoriesCount} icon="📂" />
       </div>
 
-      {/* نمودار فروش */}
+      {/* Sales chart */}
       <div className="bg-white dark:bg-gray-700 rounded-2xl shadow-md p-6">
         <h2 className="text-xl font-semibold mb-4">Sales Chart</h2>
         <div className="h-72 flex items-center justify-center text-gray-400">
@@ -71,7 +71,7 @@ function Home() {
         </div>
       </div>
 
-      {/* آخرین سفارش‌ها */}
+      {/* Recent orders */}
       <div className="bg-white dark:bg-gray-700 rounded-2xl shadow-md p-6">
         <h2 className="text-xl font-semibold mb-4">Recent Orders</h2>
         <div className="text-gray-400">No recent orders</div>
