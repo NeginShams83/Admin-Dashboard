@@ -1,81 +1,103 @@
-import Input from "./Input";
-import Button from "./Button";
+import Input from "../Components/Common/Input.jsx";
+import Button from "../Components/Common/Button.jsx";
 import { useEffect, useState } from "react";
 import api from "../api/api.js";
 
-function EditForm({ onCancel, onSave, profile, userId }) {
-  //formData
+function EditForm({ onCancel, onSave, profile }) {
+  // formData
   const [formData, setFormData] = useState({
     firstname: "",
     username: "",
     password: "",
   });
-  //error state
+
+  // error state
   const [firstnameError, setFirstnameError] = useState("");
   const [usernameError, setUsernameError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
+  const [serverError, setServerError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  //useEffect
+  // useEffect
   useEffect(() => {
     if (!profile) return;
     setFormData({
-      firstname: profile.firstname,
-      username: profile.username,
+      firstname: profile.firstname || profile.firstName || "",
+      username: profile.username || "",
       password: "",
     });
   }, [profile]);
 
-  //handle sub
+  // handle submit
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     setFirstnameError("");
     setUsernameError("");
-    setPasswordError("");
+    setServerError("");
 
     let hasError = false;
-    //
+
     if (!formData.firstname.trim()) {
-      setFirstnameError("firstname required");
+      setFirstnameError("نام الزامی است");
       hasError = true;
     }
     if (!formData.username.trim()) {
-      setUsernameError("username required");
+      setUsernameError("نام کاربری الزامی است");
       hasError = true;
     }
-    if (!formData.password.trim()) {
-      setPasswordError("Password required");
-      hasError = true;
-    }
+
     if (hasError) return;
-    console.log({
-      formData,
-    });
+
+    const payload = {
+      firstname: formData.firstname,
+      username: formData.username,
+    };
+    if (formData.password.trim()) {
+      payload.password = formData.password;
+    }
 
     try {
-      const res = await api.patch(`/users/${userId}`, formData);
-      console.log(res.data);
+      setIsSubmitting(true);
+
+      const res = await api.patch("/users/profile", payload);
+
+      console.log("PATCH SUCCESS:", res.data);
+
       onSave?.();
     } catch (error) {
-      console.log(error.response.data);
+      console.error("Error updating profile:", error);
+
+      const msg =
+        error.response?.data?.message || "خطا در به‌روزرسانی اطلاعات پروفایل";
+
+      setServerError(msg);
+    } finally {
+      setIsSubmitting(false);
     }
   };
+
   const handleCancel = () => {
     setFormData({
-      firstname: profile.firstname || "",
-      username: profile.username,
+      firstname: profile?.firstname || profile?.firstName || "",
+      username: profile?.username || "",
       password: "",
     });
     setUsernameError("");
     setFirstnameError("");
-    setPasswordError("");
+    setServerError("");
 
     onCancel();
   };
 
   return (
     <div className="w-full">
-      <h2 className="text-2xl font-bold text-center  mb-6">Edit Profile</h2>
+      <h2 className="text-2xl font-bold text-center mb-6">Edit Profile</h2>
+
+      {serverError && (
+        <div className="mb-4 text-sm text-red-600 bg-red-100 p-2 rounded-lg text-center">
+          {serverError}
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-5">
         <Input
@@ -87,7 +109,7 @@ function EditForm({ onCancel, onSave, profile, userId }) {
             })
           }
           error={firstnameError}
-          label="firstname"
+          label="Firstname"
           className="w-full text-black bg-gray-50 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
         />
 
@@ -100,11 +122,12 @@ function EditForm({ onCancel, onSave, profile, userId }) {
             })
           }
           error={usernameError}
-          label="username"
+          label="Username"
           className="w-full text-black bg-gray-50 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
         />
 
         <Input
+          type="password"
           value={formData.password}
           onChange={(e) =>
             setFormData({
@@ -112,8 +135,8 @@ function EditForm({ onCancel, onSave, profile, userId }) {
               password: e.target.value,
             })
           }
-          error={passwordError}
-          label="Password"
+          label="New Password (optional)"
+          placeholder="در صورت عدم تغییر خالی بگذارید"
           className="w-full text-black bg-gray-50 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
         />
 
@@ -128,9 +151,10 @@ function EditForm({ onCancel, onSave, profile, userId }) {
 
           <Button
             type="submit"
+            disabled={isSubmitting}
             className="px-5 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
           >
-            Save Changes
+            {isSubmitting ? "Saving..." : "Save Changes"}
           </Button>
         </div>
       </form>
