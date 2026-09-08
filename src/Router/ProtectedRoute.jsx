@@ -1,5 +1,5 @@
 import { Navigate } from "react-router-dom";
-import { useAuth } from "../Context/AuthContext.jsx";
+import { useAuth } from "../Context/useAuth.js";
 import Loading from "../Components/Common/Loading.jsx";
 
 function ProtectedRoute({ children, adminOnly = false }) {

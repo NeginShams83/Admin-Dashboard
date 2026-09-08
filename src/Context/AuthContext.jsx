@@ -1,25 +1,20 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useState } from "react";
 
 //context
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
+  const [user, setUser] = useState(() => {
     const storedUser = localStorage.getItem("user");
-
-    if (storedUser) {
-      try {
-        setUser(JSON.parse(storedUser));
-      } catch (error) {
-        console.error("خطا در خواندن اطلاعات کاربر از localStorage:", error);
-        localStorage.removeItem("user");
-      }
+    if (!storedUser) return null;
+    try {
+      return JSON.parse(storedUser);
+    } catch (error) {
+      console.error("خطا در خواندن اطلاعات کاربر از localStorage:", error);
+      localStorage.removeItem("user");
+      return null;
     }
-    setLoading(false);
-  }, []);
+  });
 
   //logoutfunc
   const logout = () => {
@@ -30,7 +25,7 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, setUser, logout, loading }}>
+    <AuthContext.Provider value={{ user, setUser, logout, loading: false }}>
       {children}
     </AuthContext.Provider>
   );
@@ -38,10 +33,4 @@ export function AuthProvider({ children }) {
 
 export default AuthProvider;
 
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth باید حتماً در داخل AuthProvider استفاده شود.");
-  }
-  return context;
-};
+export { AuthContext };

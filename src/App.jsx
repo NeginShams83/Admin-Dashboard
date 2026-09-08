@@ -8,6 +8,9 @@ import Login from "./Pages/Login";
 import Home from "./Pages/Admin/Home.jsx";
 import Users from "./Pages/Admin/Users.jsx";
 import ProtectedRoute from "./Router/ProtectedRoute.jsx";
+import Categories from "./Pages/Admin/Categories.jsx";
+import SubCategory from "./Pages/Admin/SubCategory.jsx";
+import Products from "./Pages/Admin/Products.jsx";
 
 function App() {
   return (
@@ -28,6 +31,9 @@ function App() {
           <Route path="home" element={<Home />} />
           <Route path="users" element={<Users />} />
           <Route path="profile" element={<Profile />} />
+          <Route path="products" element={<Products />} />
+          <Route path="Categories" element={<Categories />} />
+          <Route path="SubCategories" element={<SubCategory />} />
           <Route path="settings" element={<Settings />} />
           <Route path="favorites" element={<Favorites />} />
         </Route>

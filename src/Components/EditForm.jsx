@@ -1,13 +1,13 @@
 import Input from "../Components/Common/Input.jsx";
 import Button from "../Components/Common/Button.jsx";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import api from "../api/api.js";
 
 function EditForm({ onCancel, onSave, profile }) {
   // formData
   const [formData, setFormData] = useState({
-    firstname: "",
-    username: "",
+    firstname: profile?.firstname || profile?.firstName || "",
+    username: profile?.username || "",
     password: "",
   });
 
@@ -16,16 +16,6 @@ function EditForm({ onCancel, onSave, profile }) {
   const [usernameError, setUsernameError] = useState("");
   const [serverError, setServerError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // useEffect
-  useEffect(() => {
-    if (!profile) return;
-    setFormData({
-      firstname: profile.firstname || profile.firstName || "",
-      username: profile.username || "",
-      password: "",
-    });
-  }, [profile]);
 
   // handle submit
   const handleSubmit = async (e) => {
@@ -90,16 +80,18 @@ function EditForm({ onCancel, onSave, profile }) {
   };
 
   return (
-    <div className="w-full">
-      <h2 className="text-2xl font-bold text-center mb-6">Edit Profile</h2>
+    <div className="w-full dir-rtl text-neutral-800 dark:text-neutral-100">
+      <h2 className="text-xl font-bold text-center mb-6 text-neutral-900 dark:text-neutral-50">
+        ویرایش پروفایل
+      </h2>
 
       {serverError && (
-        <div className="mb-4 text-sm text-red-600 bg-red-100 p-2 rounded-lg text-center">
+        <div className="mb-5 text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/50 p-3 rounded-xl text-center font-medium">
           {serverError}
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <Input
           value={formData.firstname}
           onChange={(e) =>
@@ -109,8 +101,8 @@ function EditForm({ onCancel, onSave, profile }) {
             })
           }
           error={firstnameError}
-          label="Firstname"
-          className="w-full text-black bg-gray-50 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
+          label="نام"
+          className="w-full text-neutral-900 dark:text-neutral-100 bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700/70 rounded-xl px-4 py-2.5 focus:border-neutral-400 dark:focus:border-neutral-500 focus:outline-none transition"
         />
 
         <Input
@@ -122,8 +114,8 @@ function EditForm({ onCancel, onSave, profile }) {
             })
           }
           error={usernameError}
-          label="Username"
-          className="w-full text-black bg-gray-50 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
+          label="نام کاربری"
+          className="w-full text-neutral-900 dark:text-neutral-100 bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700/70 rounded-xl px-4 py-2.5 focus:border-neutral-400 dark:focus:border-neutral-500 focus:outline-none transition"
         />
 
         <Input
@@ -135,26 +127,26 @@ function EditForm({ onCancel, onSave, profile }) {
               password: e.target.value,
             })
           }
-          label="New Password (optional)"
+          label="رمز عبور جدید (اختیاری)"
           placeholder="در صورت عدم تغییر خالی بگذارید"
-          className="w-full text-black bg-gray-50 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
+          className="w-full text-neutral-900 dark:text-neutral-100 bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700/70 rounded-xl px-4 py-2.5 focus:border-neutral-400 dark:focus:border-neutral-500 focus:outline-none transition placeholder-neutral-400 dark:placeholder-neutral-500"
         />
 
-        <div className="flex justify-end gap-3 mt-2">
+        <div className="flex justify-end gap-2.5 mt-4">
           <Button
             type="button"
             onClick={handleCancel}
-            className="px-5 py-2 rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 transition"
+            className="px-4 py-2.5 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-neutral-100 dark:bg-neutral-700/60 text-neutral-700 dark:text-neutral-200 hover:bg-neutral-200 dark:hover:bg-neutral-600 font-medium transition text-sm"
           >
-            Cancel
+            انصراف
           </Button>
 
           <Button
             type="submit"
             disabled={isSubmitting}
-            className="px-5 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
+            className="px-5 py-2.5 rounded-xl bg-neutral-900 dark:bg-neutral-100 hover:bg-neutral-800 dark:hover:bg-neutral-200 text-white dark:text-neutral-900 font-medium transition text-sm shadow-sm"
           >
-            {isSubmitting ? "Saving..." : "Save Changes"}
+            {isSubmitting ? "در حال ذخیره..." : "ذخیره تغییرات"}
           </Button>
         </div>
       </form>

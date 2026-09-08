@@ -14,22 +14,12 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 
-import Chip from "@mui/material/Chip";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
-import Typography from "@mui/material/Typography";
 
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import PersonIcon from "@mui/icons-material/Person";
-
-const getRoleColor = (role) => {
-  const r = (role || "").toLowerCase();
-
-  if (r === "admin" || r.includes("مدیر")) return "error";
-
-  return "primary";
-};
 
 function Users() {
   const [users, setUsers] = useState([]);
@@ -55,26 +45,21 @@ function Users() {
     role: "user",
   });
 
-  const fetchUsers = async () => {
-    try {
-      setLoading(true);
-
-      const res = await api.get("/users");
-
-      const usersData = Array.isArray(res.data)
-        ? res.data
-        : res?.data?.users || res?.data?.data?.users || [];
-
-      setUsers(usersData);
-    } catch (err) {
-      console.error("error in get users", err);
-      setError("مشکلی در دریافت اطلاعات کاربران پیش آمد");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const res = await api.get("/users");
+        const usersData = Array.isArray(res.data)
+          ? res.data
+          : res?.data?.users || res?.data?.data?.users || [];
+        setUsers(usersData);
+      } catch (err) {
+        console.error("error in get users", err);
+        setError("مشکلی در دریافت اطلاعات کاربران پیش آمد");
+      } finally {
+        setLoading(false);
+      }
+    };
     fetchUsers();
   }, []);
 
@@ -186,71 +171,56 @@ function Users() {
   };
 
   if (loading) return <Loading />;
-
   if (error) return <Alert type="error" message={error} />;
 
   return (
-    <>
-      {/* Add User Button */}
-      <button
-        onClick={() => setIsAddModalOpen(true)}
-        className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700"
-      >
-        + Add User
-      </button>
+    <div className="space-y-6 dir-rtl text-neutral-800 dark:text-neutral-100 transition-colors duration-200">
+      {/* Header & Add User Button */}
+      <div className="flex justify-between items-center">
+        <h1 className="text-xl sm:text-2xl font-bold text-neutral-900 dark:text-neutral-50">
+          مدیریت کاربران
+        </h1>
+        <button
+          onClick={() => setIsAddModalOpen(true)}
+          className="rounded-xl bg-neutral-900 hover:bg-neutral-800 dark:bg-neutral-100 dark:hover:bg-neutral-200 text-white dark:text-neutral-900 px-4 py-2.5 text-sm font-semibold shadow-sm transition-all flex items-center gap-2"
+        >
+          <span>+</span> افزودن کاربر جدید
+        </button>
+      </div>
 
       {/* Users Table */}
       <TableContainer
         component={Paper}
-        sx={{
-          mt: 4,
-          mx: 2,
-          borderRadius: 3,
-          boxShadow: 3,
-          border: "1px solid #e0e0e0",
-          overflow: "hidden",
-        }}
+        elevation={0}
+        className="!bg-white dark:!bg-neutral-800/80 !border !border-neutral-200 dark:!border-neutral-700/70 !rounded-2xl !shadow-sm overflow-hidden"
       >
         <Table sx={{ minWidth: 650 }} aria-label="users table">
-          <TableHead sx={{ backgroundColor: "#f8f9fa" }}>
+          <TableHead className="bg-neutral-50 dark:bg-neutral-900/60">
             <TableRow>
               <TableCell
-                sx={{
-                  fontWeight: 700,
-                  fontSize: "0.9rem",
-                  color: "#495057",
-                }}
+                align="right"
+                className="!font-bold !text-neutral-700 dark:!text-neutral-300 !border-b !border-neutral-200 dark:!border-neutral-700/70"
               >
                 نام
               </TableCell>
 
               <TableCell
-                sx={{
-                  fontWeight: 700,
-                  fontSize: "0.9rem",
-                  color: "#495057",
-                }}
+                align="right"
+                className="!font-bold !text-neutral-700 dark:!text-neutral-300 !border-b !border-neutral-200 dark:!border-neutral-700/70"
               >
                 نام کاربری
               </TableCell>
 
               <TableCell
-                sx={{
-                  fontWeight: 700,
-                  fontSize: "0.9rem",
-                  color: "#495057",
-                }}
+                align="right"
+                className="!font-bold !text-neutral-700 dark:!text-neutral-300 !border-b !border-neutral-200 dark:!border-neutral-700/70"
               >
                 نقش (Role)
               </TableCell>
 
               <TableCell
-                sx={{
-                  fontWeight: 700,
-                  fontSize: "0.9rem",
-                  color: "#495057",
-                }}
                 align="center"
+                className="!font-bold !text-neutral-700 dark:!text-neutral-300 !border-b !border-neutral-200 dark:!border-neutral-700/70"
               >
                 عملیات
               </TableCell>
@@ -266,91 +236,95 @@ function Users() {
                   user.username ||
                   "کاربر ناشناس";
 
+                const isAdmin = user.role === "admin";
+
                 return (
                   <TableRow
                     key={user._id || user.id}
+                    className="hover:bg-neutral-50/80 dark:hover:bg-neutral-700/30 transition-colors"
                     sx={{
                       "&:last-child td, &:last-child th": {
                         border: 0,
                       },
-
-                      "&:hover": {
-                        backgroundColor: "#f1f3f5",
-                        transition: "background-color 0.2s ease",
-                      },
                     }}
                   >
                     {/* First Name */}
-                    <TableCell>
-                      <Typography variant="body2" fontWeight="500">
+                    <TableCell
+                      align="right"
+                      className="!border-b !border-neutral-100 dark:!border-neutral-700/50"
+                    >
+                      <span className="font-medium text-neutral-800 dark:text-neutral-200 text-sm">
                         {displayName}
-                      </Typography>
+                      </span>
                     </TableCell>
 
                     {/* Username */}
-                    <TableCell>
-                      <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        dir="ltr"
-                        sx={{ textAlign: "right" }}
-                      >
+                    <TableCell
+                      align="right"
+                      className="!border-b !border-neutral-100 dark:!border-neutral-700/50"
+                    >
+                      <span className="text-neutral-500 dark:text-neutral-400 text-sm font-mono dir-ltr inline-block">
                         @{user.username}
-                      </Typography>
+                      </span>
                     </TableCell>
 
-                    {/* Role */}
-                    <TableCell>
-                      <Chip
-                        label={user.role === "admin" ? "ادمین" : "کاربر عادی"}
-                        color={getRoleColor(user.role)}
-                        size="small"
-                        variant="outlined"
-                        sx={{ fontWeight: 600 }}
-                      />
+                    {/* Role Tag */}
+                    <TableCell
+                      align="right"
+                      className="!border-b !border-neutral-100 dark:!border-neutral-700/50"
+                    >
+                      <span
+                        className={`inline-flex items-center px-2.5 py-0.5 rounded-lg text-xs font-semibold border ${
+                          isAdmin
+                            ? "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20"
+                            : "bg-neutral-100 dark:bg-neutral-700/50 text-neutral-600 dark:text-neutral-300 border-neutral-200 dark:border-neutral-600/50"
+                        }`}
+                      >
+                        {isAdmin ? "ادمین" : "کاربر عادی"}
+                      </span>
                     </TableCell>
 
                     {/* Actions */}
-                    <TableCell align="center">
-                      <Tooltip title="ویرایش نقش">
-                        <IconButton
-                          size="small"
-                          color="primary"
-                          sx={{ mx: 0.5 }}
-                          onClick={() => handleOpenEditModal(user)}
-                        >
-                          <EditIcon fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
+                    <TableCell
+                      align="center"
+                      className="!border-b !border-neutral-100 dark:!border-neutral-700/50"
+                    >
+                      <div className="flex items-center justify-center gap-1">
+                        <Tooltip title="ویرایش نقش">
+                          <IconButton
+                            size="small"
+                            className="!text-neutral-500 hover:!text-neutral-900 dark:!text-neutral-400 dark:hover:!text-neutral-100 hover:!bg-neutral-100 dark:hover:!bg-neutral-700/60"
+                            onClick={() => handleOpenEditModal(user)}
+                          >
+                            <EditIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
 
-                      <Tooltip title="حذف">
-                        <IconButton
-                          size="small"
-                          color="error"
-                          sx={{ mx: 0.5 }}
-                          onClick={() => handleOpenDeleteModal(user)}
-                        >
-                          <DeleteIcon fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
+                        <Tooltip title="حذف">
+                          <IconButton
+                            size="small"
+                            className="!text-rose-500 hover:!text-rose-700 dark:!text-rose-400 dark:hover:!text-rose-300 hover:!bg-rose-500/10"
+                            onClick={() => handleOpenDeleteModal(user)}
+                          >
+                            <DeleteIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                      </div>
                     </TableCell>
                   </TableRow>
                 );
               })
             ) : (
               <TableRow>
-                <TableCell colSpan={4} align="center" sx={{ py: 6 }}>
-                  <PersonIcon
-                    sx={{
-                      fontSize: 48,
-                      color: "#bdbdbd",
-                      mb: 1,
-                    }}
-                  />
-
-                  <Typography variant="body1" color="text.secondary">
+                <TableCell
+                  colSpan={4}
+                  align="center"
+                  className="!py-12 !border-0 text-center"
+                >
+                  <PersonIcon className="!text-5xl !text-neutral-300 dark:!text-neutral-600 !mb-2" />
+                  <p className="text-neutral-400 dark:text-neutral-500 text-sm">
                     هیچ کاربری یافت نشد.
-                  </Typography>
+                  </p>
                 </TableCell>
               </TableRow>
             )}
@@ -361,15 +335,19 @@ function Users() {
       {/* Delete Modal */}
       {isModalOpen && (
         <Modal onClose={handleCancel}>
-          <h2 className="font-bold text-lg">حذف کاربر</h2>
+          <h2 className="font-bold text-lg text-neutral-900 dark:text-neutral-100">
+            حذف کاربر
+          </h2>
 
-          <p className="mt-3">آیا از حذف این حساب کاربری اطمینان دارید؟</p>
+          <p className="mt-3 text-neutral-600 dark:text-neutral-300 text-sm">
+            آیا از حذف این حساب کاربری اطمینان دارید؟
+          </p>
 
-          <div className="flex justify-end gap-2 mt-4">
+          <div className="flex justify-end gap-2 mt-6">
             <Button
               type="button"
               onClick={handleCancel}
-              className="px-4 py-2 font-bold bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md"
+              className="px-4 py-2 font-semibold bg-neutral-100 dark:bg-neutral-700 hover:bg-neutral-200 dark:hover:bg-neutral-600 text-neutral-700 dark:text-neutral-200 rounded-xl transition text-sm"
             >
               انصراف
             </Button>
@@ -378,7 +356,7 @@ function Users() {
               type="button"
               onClick={handleDelete}
               disabled={isDeleting}
-              className="px-4 py-2 bg-red-500 hover:bg-red-700 text-white rounded-md"
+              className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl transition text-sm font-semibold"
             >
               {isDeleting ? "در حال حذف..." : "حذف"}
             </Button>
@@ -389,18 +367,20 @@ function Users() {
       {/* Edit Role Modal */}
       {isEditModalOpen && (
         <Modal onClose={handleCancel}>
-          <h3 className="font-bold text-lg mb-4">ویرایش نقش کاربر</h3>
+          <h3 className="font-bold text-lg mb-4 text-neutral-900 dark:text-neutral-100">
+            ویرایش نقش کاربر
+          </h3>
 
           <Input
             name="username"
             label="نام کاربری"
             value={editForm.username}
             disabled={true}
-            className="px-4 py-1 rounded-lg mb-3 w-full border cursor-not-allowed bg-gray-50"
+            className="px-4 py-2 rounded-xl mb-4 w-full border border-neutral-200 dark:border-neutral-700 cursor-not-allowed bg-neutral-100 dark:bg-neutral-900 text-neutral-500 dark:text-neutral-400"
           />
 
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1.5">
               نقش کاربر
             </label>
 
@@ -408,19 +388,18 @@ function Users() {
               name="role"
               value={editForm.role}
               onChange={handleChange}
-              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-neutral-800 dark:text-neutral-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-neutral-400 dark:focus:ring-neutral-600 transition text-sm"
             >
               <option value="user">کاربر عادی (user)</option>
-
               <option value="admin">ادمین (admin)</option>
             </select>
           </div>
 
-          <div className="flex justify-end gap-2 mt-4">
+          <div className="flex justify-end gap-2 mt-6">
             <Button
               type="button"
               onClick={handleCancel}
-              className="px-4 py-2 font-bold bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md"
+              className="px-4 py-2 font-semibold bg-neutral-100 dark:bg-neutral-700 hover:bg-neutral-200 dark:hover:bg-neutral-600 text-neutral-700 dark:text-neutral-200 rounded-xl transition text-sm"
             >
               انصراف
             </Button>
@@ -428,7 +407,7 @@ function Users() {
             <Button
               type="button"
               onClick={handleSaveEdit}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md"
+              className="px-4 py-2 bg-neutral-900 dark:bg-neutral-100 hover:bg-neutral-800 dark:hover:bg-neutral-200 text-white dark:text-neutral-900 rounded-xl transition font-semibold text-sm"
             >
               ذخیره تغییرات
             </Button>
@@ -438,74 +417,74 @@ function Users() {
 
       {/* Add User Modal */}
       {isAddModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4">
-          <div className="w-full max-w-md rounded-2xl p-6 dark:bg-white shadow-2xl">
-            <div className="mb-6">
-              <h2 className="text-xl font-bold text-gray-900">Add New User</h2>
+        <Modal onClose={() => setIsAddModalOpen(false)}>
+          <div className="mb-6">
+            <h2 className="text-xl font-bold text-neutral-900 dark:text-neutral-50">
+              افزودن کاربر جدید
+            </h2>
 
-              <p className="mt-1 text-sm text-gray-500">
-                Create a new user account
-              </p>
-            </div>
-
-            <div className="space-y-4 dark:text-black">
-              <input
-                type="text"
-                name="firstname"
-                placeholder="First Name"
-                value={addForm.firstname}
-                onChange={handleAddChange}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-              />
-
-              <input
-                type="text"
-                name="username"
-                placeholder="Username"
-                value={addForm.username}
-                onChange={handleAddChange}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-              />
-
-              <input
-                type="password"
-                name="password"
-                placeholder="Password"
-                value={addForm.password}
-                onChange={handleAddChange}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-              />
-
-              <select
-                name="role"
-                value={addForm.role}
-                onChange={handleAddChange}
-                className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-              >
-                <option value="user">User</option>
-                <option value="admin">Admin</option>
-              </select>
-            </div>
-
-            <div className="mt-6 flex justify-end gap-3">
-              <button
-                onClick={() => setIsAddModalOpen(false)}
-                className="rounded-lg bg-gray-100 px-4 py-2 text-sm font-semibold text-gray-700 transition hover:bg-gray-200"
-              >
-                Cancel
-              </button>
-
-              <button
-                onClick={handleAddUser}
-                className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700"
-              >
-                Add User
-              </button>
-            </div>
+            <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
+              ساخت یک حساب کاربری جدید در سیستم
+            </p>
           </div>
-        </div>
+
+          <div className="space-y-4">
+            <input
+              type="text"
+              name="firstname"
+              placeholder="نام"
+              value={addForm.firstname}
+              onChange={handleAddChange}
+              className="w-full rounded-xl border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-900 px-3.5 py-2.5 text-sm text-neutral-800 dark:text-neutral-100 placeholder-neutral-400 dark:placeholder-neutral-500 outline-none transition focus:border-neutral-400 dark:focus:border-neutral-500"
+            />
+
+            <input
+              type="text"
+              name="username"
+              placeholder="نام کاربری (Username)"
+              value={addForm.username}
+              onChange={handleAddChange}
+              className="w-full rounded-xl border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-900 px-3.5 py-2.5 text-sm text-neutral-800 dark:text-neutral-100 placeholder-neutral-400 dark:placeholder-neutral-500 outline-none transition focus:border-neutral-400 dark:focus:border-neutral-500"
+            />
+
+            <input
+              type="password"
+              name="password"
+              placeholder="رمز عبور"
+              value={addForm.password}
+              onChange={handleAddChange}
+              className="w-full rounded-xl border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-900 px-3.5 py-2.5 text-sm text-neutral-800 dark:text-neutral-100 placeholder-neutral-400 dark:placeholder-neutral-500 outline-none transition focus:border-neutral-400 dark:focus:border-neutral-500"
+            />
+
+            <select
+              name="role"
+              value={addForm.role}
+              onChange={handleAddChange}
+              className="w-full rounded-xl border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-900 px-3.5 py-2.5 text-sm text-neutral-800 dark:text-neutral-100 outline-none transition focus:border-neutral-400 dark:focus:border-neutral-500"
+            >
+              <option value="user">کاربر عادی (User)</option>
+              <option value="admin">مدیر (Admin)</option>
+            </select>
+          </div>
+
+          <div className="mt-6 flex justify-end gap-3">
+            <button
+              onClick={() => setIsAddModalOpen(false)}
+              className="rounded-xl bg-neutral-100 dark:bg-neutral-700 px-4 py-2 text-sm font-semibold text-neutral-700 dark:text-neutral-200 transition hover:bg-neutral-200 dark:hover:bg-neutral-600"
+            >
+              انصراف
+            </button>
+
+            <button
+              onClick={handleAddUser}
+              className="rounded-xl bg-neutral-900 hover:bg-neutral-800 dark:bg-neutral-100 dark:hover:bg-neutral-200 text-white dark:text-neutral-900 px-4 py-2 text-sm font-semibold transition shadow-sm"
+            >
+              افزودن کاربر
+            </button>
+          </div>
+        </Modal>
       )}
-    </>
+    </div>
   );
 }
 

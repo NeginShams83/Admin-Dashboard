@@ -1,29 +1,27 @@
-import Input from "../Components/Common/Input";
 import Button from "../Components/Common/Button";
+import Alert from "../Components/Common/Alert";
 import { useState } from "react";
-import { useAuth } from "../Context/AuthContext";
+import { useAuth } from "../Context/useAuth.js";
 import { useNavigate } from "react-router-dom";
 import api from "../api/api";
 
 function Login() {
-  // Form states
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [usernameError, setUsernameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [serverError, setServerError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const { setUser } = useAuth();
   const navigate = useNavigate();
 
-  // Handle form submit
   const handleSubmit = async (e) => {
     e.preventDefault();
     setUsernameError("");
     setPasswordError("");
     setServerError("");
 
-    // Simple validation
     let hasError = false;
     if (!username.trim()) {
       setUsernameError("نام کاربری الزامی است");
@@ -36,6 +34,7 @@ function Login() {
     if (hasError) return;
 
     try {
+      setLoading(true);
       const response = await api.post("/auth/login", {
         username,
         password,
@@ -44,12 +43,10 @@ function Login() {
       const { token, role } = response.data;
       const userData = { username, role };
 
-      // Update context and storage
       setUser(userData);
       localStorage.setItem("user", JSON.stringify(userData));
       localStorage.setItem("token", token);
 
-      // Redirect by role
       if (role === "admin") {
         navigate("/dashboard");
       } else {
@@ -59,50 +56,80 @@ function Login() {
       const errorMessage =
         error.response?.data?.message || "خطا در برقراری ارتباط با سرور";
       setServerError(errorMessage);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-96 bg-[#B4B5BB] rounded-2xl gap-5 text-black">
-      <h1 className="text-2xl mb-5">Welcome to the Login</h1>
-
-      {serverError && (
-        <div className="text-red-600 bg-red-100 px-4 py-1 rounded-lg text-sm">
-          {serverError}
+    <div className="min-h-[80vh] flex items-center justify-center p-4 dir-rtl">
+      <div className="w-full max-w-md bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700/70 rounded-2xl shadow-xl p-8 transition-colors duration-200">
+        {/* Header */}
+        <div className="text-center mb-6">
+          <h1 className="text-2xl font-bold text-neutral-900 dark:text-neutral-50 mb-2">
+            ورود به حساب کاربری
+          </h1>
+          <p className="text-xs sm:text-sm text-neutral-500 dark:text-neutral-400">
+            برای دسترسی به داشبورد اطلاعات خود را وارد کنید
+          </p>
         </div>
-      )}
 
-      <form
-        onSubmit={handleSubmit}
-        className="flex flex-col justify-center items-center"
-      >
-        <Input
-          id="username"
-          label="Username :"
-          type="text"
-          placeholder="Enter your username..."
-          className="m-4 outline-none text-white focus:ring-1 ring-white px-4 py-1 bg-[#385894] transition-all hover:bg-[#2c3e70] rounded-lg"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          error={usernameError}
-        />
-        <Input
-          id="password"
-          label="Password :"
-          type="password"
-          placeholder="Enter your password..."
-          className="m-4 outline-none text-white focus:ring-1 ring-white px-4 py-1 bg-[#385894] transition-all hover:bg-[#2c3e70] rounded-lg"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          error={passwordError}
-        />
-        <Button
-          type="submit"
-          className="bg-[#385894] hover:bg-[#2c3e70] text-white px-4 py-1 rounded-lg transition-all mt-2"
-        >
-          Login
-        </Button>
-      </form>
+        {/* Server Error */}
+        {serverError && (
+          <div className="mb-5">
+            <Alert type="error" message={serverError} />
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Username Input */}
+          <div className="space-y-1.5">
+            <label className="block text-xs sm:text-sm font-semibold text-neutral-700 dark:text-neutral-200">
+              نام کاربری
+            </label>
+            <input
+              type="text"
+              placeholder="نام کاربری خود را وارد کنید..."
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="w-full px-4 py-2.5 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 dark:placeholder-neutral-500 text-sm outline-none transition focus:border-neutral-400 dark:focus:border-neutral-500"
+            />
+            {usernameError && (
+              <p className="text-xs text-rose-500 font-medium">
+                {usernameError}
+              </p>
+            )}
+          </div>
+
+          {/* Password Input */}
+          <div className="space-y-1.5">
+            <label className="block text-xs sm:text-sm font-semibold text-neutral-700 dark:text-neutral-200">
+              رمز عبور
+            </label>
+            <input
+              type="password"
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-4 py-2.5 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 dark:placeholder-neutral-500 text-sm outline-none transition focus:border-neutral-400 dark:focus:border-neutral-500"
+            />
+            {passwordError && (
+              <p className="text-xs text-rose-500 font-medium">
+                {passwordError}
+              </p>
+            )}
+          </div>
+
+          {/* Submit Button */}
+          <Button
+            type="submit"
+            disabled={loading}
+            className="w-full py-3 bg-neutral-900 dark:bg-neutral-100 hover:bg-neutral-800 dark:hover:bg-neutral-200 text-white dark:text-neutral-900 font-semibold rounded-xl transition-all shadow-sm text-sm mt-3 disabled:opacity-50"
+          >
+            {loading ? "در حال ورود..." : "ورود"}
+          </Button>
+        </form>
+      </div>
     </div>
   );
 }

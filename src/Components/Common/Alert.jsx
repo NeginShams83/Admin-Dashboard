@@ -21,7 +21,7 @@ function Alert({ type = "info", message }) {
   const typeConfig = config[type] || config.info;
   return (
     <div className={`${typeConfig.className} p-4 rounded-md`}>
-      <h2 className={`text-lg font-bold${typeConfig.title} `}></h2>
+      <h2 className="text-lg font-bold">{typeConfig.title}</h2>
       <p>{message}</p>
     </div>
   );

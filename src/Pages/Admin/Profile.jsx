@@ -36,17 +36,19 @@ function Profile() {
   if (error) return <Alert type="error" message={error} />;
 
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-gray-50/20 rounded-xl shadow-sm">
-      <div className="flex items-center justify-between border-b border-gray-200 pb-4 mb-6">
-        <h2 className="text-2xl font-bold flex items-center gap-2">
+    <div className="max-w-5xl mx-auto p-6 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700/70 rounded-2xl shadow-sm dir-rtl text-neutral-800 dark:text-neutral-100 transition-colors duration-200">
+      <div className="flex items-center justify-between border-b border-neutral-200 dark:border-neutral-700/70 pb-4 mb-6">
+        <h2 className="text-2xl font-bold flex items-center gap-2 text-neutral-900 dark:text-neutral-50">
           <span>👤</span> پروفایل کاربران
         </h2>
-        <span className="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">
+        <span className="bg-neutral-100 dark:bg-neutral-700 text-neutral-800 dark:text-neutral-200 text-xs font-semibold px-3 py-1 rounded-full border border-neutral-200 dark:border-neutral-600">
           {users.length} کاربر فعال
         </span>
       </div>
 
-      <h3 className="text-lg font-medium mb-4">لیست کاربران سیستم:</h3>
+      <h3 className="text-lg font-medium mb-4 text-neutral-700 dark:text-neutral-300">
+        لیست کاربران سیستم:
+      </h3>
 
       {users.length === 0 ? (
         <Empty title="هیچ کاربری در سیستم یافت نشد" />
